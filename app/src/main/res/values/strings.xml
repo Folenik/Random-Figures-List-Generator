@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Aplikacja</string>
+
+
+    <!-- MainActivity strings -->
+    <string name="primary_activity_text">START</string>
+    <string name="presentation_activity_text">Informacje</string>
+    <string name="information_activity_text">Statystyki</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Anuluj</string>
+
+</resources>

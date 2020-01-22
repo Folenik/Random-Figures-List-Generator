@@ -1,0 +1,76 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/action_delete"
+        android:icon="@drawable/ic_delete_forever_black_24dp"
+        android:title="Delete"
+        app:showAsAction="ifRoom">
+
+        <menu>
+            <item
+                android:id="@+id/action_delete_sub1"
+                android:title="Usuń wszystko" />
+
+            <item
+                android:id="@+id/action_delete_sub2"
+                android:title="Usuń prostokąty" />
+
+            <item
+                android:id="@+id/action_delete_sub3"
+                android:title="Usuń trójkąty" />
+
+            <item
+                android:id="@+id/action_delete_sub4"
+                android:title="Usuń koła" />
+
+        </menu>
+
+
+    </item>
+
+    <item
+        android:id="@+id/action_sort"
+        android:icon="@drawable/ic_sort_black_24dp"
+        android:title="Sort"
+        app:showAsAction="ifRoom">
+
+        <menu>
+            <item
+                android:id="@+id/action_sort_sub1"
+                android:title="Sortuj wg. boku" />
+
+            <item
+                android:id="@+id/action_sort_sub2"
+                android:title="Sortuj wg. pola" />
+        </menu>
+
+</item>
+
+    <item
+        android:id="@+id/action_filter"
+        android:icon="@drawable/ic_filter_none_black_24dp"
+        android:title="Filter"
+        app:showAsAction="ifRoom">
+
+        <menu>
+            <item
+                android:id="@+id/action_filter_sub1"
+                android:title="Tylko prostokąty" />
+
+            <item
+                android:id="@+id/action_filter_sub2"
+                android:title="Tylko trójkąty" />
+
+            <item
+                android:id="@+id/action_filter_sub3"
+                android:title="Tylko koła" />
+
+            <item
+                android:id="@+id/action_filter_sub4"
+                android:title="Pokaż wszystko" />
+
+        </menu>
+    </item>
+
+</menu>
