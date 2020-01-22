@@ -7,6 +7,7 @@ public class Figure {
     int randomNumber = new Random().nextInt(3) + 1;
     int randomDimension1;
     int randomDimension2;
+    int result;
 
     public Figure(int firstrandom, int secondrandom) {
         this.firstrandom = firstrandom;
@@ -48,4 +49,14 @@ public class Figure {
     public void setDimension2(int randomDimension2) {
         this.randomDimension2 = randomDimension2;
     }
+
+    public void setResult (int result) {
+        this.result = result;
+    }
+
+    public Integer getResult() {
+        return result;
+    }
+
 }
+

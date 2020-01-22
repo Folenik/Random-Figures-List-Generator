@@ -3,6 +3,7 @@ package com.dawidredel.myapplication;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Adapter;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,6 +13,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.dawidredel.myapplication.Models.Figure;
+import com.mikepenz.fastadapter.FastAdapter;
+import com.mikepenz.fastadapter.adapters.ItemAdapter;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -24,11 +27,11 @@ public class PrimaryActivity extends AppCompatActivity {
     private List<Figure> figureList = new ArrayList<>();
     private RecyclerView recyclerView;
     private FigureAdapter mAdapter;
+
     Bundle bundle;
     String figuresCount, rangeFrom, rangeTo;
     Integer figuresCountInt, rangeFromInt, rangeToInt;
     Toolbar mToolbar;
-
 
 
     @Override
@@ -46,7 +49,6 @@ public class PrimaryActivity extends AppCompatActivity {
         figuresCount = bundle.getString("figureCount"); //pobranie figuresCount ktore zostalo tu poprzednio umieszczone
         rangeFrom = bundle.getString("rangeFrom");
         rangeTo = bundle.getString("rangeTo");
-
 
 
         //przekonwertowanie tych stringow na integery
@@ -71,13 +73,14 @@ public class PrimaryActivity extends AppCompatActivity {
         mToolbar = findViewById(R.id.toolbar);
         mToolbar.setTitleTextColor(getResources().getColor(R.color.colorWhite));
         setSupportActionBar(mToolbar);
+
     }
 
     public void prepareFiguresData() {
 
         // wykorzystanie pętli FOR do utworzenia tylu elementów ile określiliśmy w MainActivity
-        for(int i=0; i<figuresCountInt;i++) {
-            Figure figure = new Figure(rangeFromInt,rangeToInt); //przekazanie parametrów rangeFrom oraz rangeTo jako zakres liczbowy
+        for (int i = 0; i < figuresCountInt; i++) {
+            Figure figure = new Figure(rangeFromInt, rangeToInt); //przekazanie parametrów rangeFrom oraz rangeTo jako zakres liczbowy
             figureList.add(figure);
         }
         mAdapter.notifyDataSetChanged();
@@ -90,46 +93,85 @@ public class PrimaryActivity extends AppCompatActivity {
     }
 
     @Override
-     public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-       switch (id) {
+        switch (id) {
             case R.id.action_delete_sub1:
                 figureList.clear();
                 mAdapter.notifyDataSetChanged();
 
                 break;
             case R.id.action_delete_sub2:
+                for (int i = 0; i < figureList.size(); i++) {
+                    if (figureList.get(i).getTypeOfFigure() == 1) {
+                        figureList.remove(i);
+                        mAdapter.notifyDataSetChanged();
+                        i = i - 1;
 
-
-                //for (int i=0;i<figureList.size();i++) {
-
-                //}
-                //mAdapter.notifyDataSetChanged();
-
+                    }
+                }
                 break;
             case R.id.action_delete_sub3:
-
+                for (int i = 0; i < figureList.size(); i++) {
+                    if (figureList.get(i).getTypeOfFigure() == 2) {
+                        figureList.remove(i);
+                        mAdapter.notifyDataSetChanged();
+                        i = i - 1;
+                    }
+                }
                 break;
             case R.id.action_delete_sub4:
-
+                for (int i = 0; i < figureList.size(); i++) {
+                    if (figureList.get(i).getTypeOfFigure() == 3) {
+                        figureList.remove(i);
+                        mAdapter.notifyDataSetChanged();
+                        i = i - 1;
+                    }
+                }
                 break;
             case R.id.action_sort_sub1:
                 Collections.sort(figureList, new Comparator() {
-                   @Override
+                    @Override
                     public int compare(Object o1, Object o2) {
                         Figure f1 = (Figure) o1;
                         Figure f2 = (Figure) o2;
                         return f1.getDimension1().compareTo(f2.getDimension1());
-                   }
-               });
+                    }
+                });
+                mAdapter.notifyDataSetChanged();
                 break;
             case R.id.action_sort_sub2:
+                Collections.sort(figureList, new Comparator() {
+                    @Override
+                    public int compare(Object o1, Object o2) {
+                        Figure f1 = (Figure) o1;
+                        Figure f2 = (Figure) o2;
+                        return f1.getResult().compareTo(f2.getResult());
+                    }
+                });
+
+                mAdapter.notifyDataSetChanged();
 
                 break;
-            case R.id.action_filter:
+            case R.id.action_filter_sub1:
 
-               break;
+
+                break;
+
+
+            case R.id.action_filter_sub2:
+
+
+                break;
+            case R.id.action_filter_sub3:
+
+
+                break;
+            case R.id.action_filter_sub4:
+
+
+                break;
         }
         return super.onOptionsItemSelected(item);
     }

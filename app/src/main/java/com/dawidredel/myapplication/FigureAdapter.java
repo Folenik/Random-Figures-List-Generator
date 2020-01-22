@@ -2,7 +2,7 @@ package com.dawidredel.myapplication;
 
 import android.content.DialogInterface;
 import android.os.Build;
-import android.text.Layout;
+import android.os.NetworkOnMainThreadException;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -12,12 +12,13 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.Toolbar;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.appcompat.widget.AppCompatTextView;
+import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -32,8 +33,7 @@ public class FigureAdapter extends RecyclerView.Adapter<FigureAdapter.MyViewHold
     private List<Figure> figuresList;
     CharSequence[] values = {"Usuń element", "Wyświetl szczegóły", "Edytuj dane", "Duplikuj wpis"};
     AlertDialog alertDialog1, alertDialog2, alertDialog3;
-    Toolbar mToolbar;
-    View itemView2;
+
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public ConstraintLayout constraintLayout;
@@ -64,28 +64,17 @@ public class FigureAdapter extends RecyclerView.Adapter<FigureAdapter.MyViewHold
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.figure_layout, parent, false);
 
-        itemView2 = LayoutInflater.from(parent.getContext()).inflate(R.layout.activity_primary,parent,false);
-
         return new MyViewHolder(itemView);
     }
+
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void onBindViewHolder(final MyViewHolder holder, final int position) {
         final Figure figure = figuresList.get(position);
 
-        mToolbar = itemView2.findViewById(R.id.toolbar);
-
-        mToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem menuItem) {
-                if(menuItem.getItemId() == R.id.action_delete_sub1) {
-                    Toast.makeText(holder.image.getContext(), "DDziala", Toast.LENGTH_SHORT).show();
-                }
-                return true;
-            }
-        });
-
+        holder.constraintLayout.setVisibility(View.INVISIBLE);
+        holder.constraintLayout.setVisibility(View.VISIBLE);
 
         if (figure.getTypeOfFigure() == 1) {
             holder.image.setImageResource(R.drawable.rectangle);
@@ -97,6 +86,8 @@ public class FigureAdapter extends RecyclerView.Adapter<FigureAdapter.MyViewHold
             holder.characteristic2.setText("BOK 2");
             holder.area2.setText("POLE");
 
+            figure.setResult(figure.getRectangleArea());
+
 
         } else if (figure.getTypeOfFigure() == 2) {
             holder.image.setImageResource(R.drawable.triangle);
@@ -107,6 +98,8 @@ public class FigureAdapter extends RecyclerView.Adapter<FigureAdapter.MyViewHold
             holder.name2.setText("BOK");
             holder.characteristic2.setText("WYSOKOŚĆ");
             holder.area2.setText("POLE");
+
+            figure.setResult(figure.getTriangleArea());
         } else if (figure.getTypeOfFigure() == 3) {
             holder.image.setImageResource(R.drawable.circle);
             holder.name.setText(figure.getDimension1().toString());
@@ -116,7 +109,10 @@ public class FigureAdapter extends RecyclerView.Adapter<FigureAdapter.MyViewHold
             holder.name2.setText("PROMIEŃ");
             holder.characteristic2.setText(" - ");
             holder.area2.setText("POLE");
+
+            figure.setResult(Integer.valueOf(figure.getCircleArea().intValue()));
         }
+
 
 
         holder.constraintLayout.setOnLongClickListener(new View.OnLongClickListener() {
