@@ -6,6 +6,8 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+    <!-- Tutaj wszystko jest analogicznie jak w activity_information.xml -->
+
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideLineCenterHorizontal"
         android:layout_width="wrap_content"
@@ -34,20 +36,20 @@
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.9" />
 
-    <androidx.appcompat.widget.AppCompatImageView
+    <ImageView
         android:id="@+id/logoImageView"
-        android:layout_width="256dp"
-        android:layout_height="256dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:background="@drawable/logo"
         android:maxWidth="64dp"
         android:maxHeight="64dp"
         android:scaleType="centerCrop"
         app:layout_constraintBottom_toBottomOf="@id/guideLineCenterHorizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/guideLineRightVertical"
+        app:layout_constraintStart_toStartOf="@id/guideLineLeftVertical"
         app:layout_constraintTop_toTopOf="@id/guideLineTopHorizontal" />
 
-    <androidx.appcompat.widget.AppCompatButton
+    <Button
         android:id="@+id/primaryActivityButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -59,7 +61,7 @@
         app:layout_constraintStart_toStartOf="@id/guideLineLeftVertical"
         app:layout_constraintTop_toTopOf="@id/guideLineCenterHorizontal" />
 
-    <androidx.appcompat.widget.AppCompatButton
+    <Button
         android:id="@+id/presentationActivityButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -71,7 +73,7 @@
         app:layout_constraintStart_toStartOf="@id/guideLineLeftVertical"
         app:layout_constraintTop_toBottomOf="@+id/primaryActivityButton" />
 
-    <androidx.appcompat.widget.AppCompatButton
+    <Button
         android:id="@+id/informationActivityButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

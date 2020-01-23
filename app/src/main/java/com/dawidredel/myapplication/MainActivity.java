@@ -3,8 +3,11 @@ package com.dawidredel.myapplication;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -16,8 +19,8 @@ import androidx.appcompat.widget.AppCompatImageView;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     // inicjalizacja zmiennych
-    AppCompatImageView logoImageView;
-    AppCompatButton primaryActivityButton, presentationActivityButton, informationActivityButton;
+    ImageView logoImageView;
+    Button primaryActivityButton, presentationActivityButton, informationActivityButton;
     AlertDialog.Builder builder;
 
     @Override
@@ -63,7 +66,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void askForParameters() {
 
         buildDialogLayout(); // wywolanie funkcji ktora ustawia layout dla dialogboxa
-        builder.show();
+        builder.show(); // pokazanie dialogboxa
     }
 
     public void buildDialogLayout() {
@@ -72,12 +75,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         layout.setOrientation(LinearLayout.VERTICAL); //orientacja layouta
 
         final EditText inputFigures = new EditText(this); // stworzenie nowego EditTexta
+        inputFigures.setInputType(InputType.TYPE_CLASS_NUMBER); // tryb wpisywania liczb
         inputFigures.setHint("Liczba figur do wygenerowania"); // ustawienie hinta
 
         final EditText rangeFrom = new EditText(this); // to samo
+        rangeFrom.setInputType(InputType.TYPE_CLASS_NUMBER); // tryb wpisywania liczb
         rangeFrom.setHint("Najmniejsza wartość wymiaru");
 
         final EditText rangeTo = new EditText(this); // to samo
+        rangeTo.setInputType(InputType.TYPE_CLASS_NUMBER); // tryb wpisywania liczb
         rangeTo.setHint("Największa wartość wymiaru");
 
         layout.addView(inputFigures); //dodanie widoku powyzszego edittexta do layouta
@@ -99,7 +105,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
                 //zabezpieczenie żeby nie wpisać dolnej granicy przedziału większej od górnej granicy przedziału
-                if (Integer.parseInt(rangeFromText) < Integer.parseInt(rangeToText)) {
+                if (Integer.parseInt(rangeFromText) <= Integer.parseInt(rangeToText)) {
                     Intent intent = new Intent(MainActivity.this, PrimaryActivity.class); // przejście do klasy PrimaryActivity
                     intent.putExtra("figureCount", figuresNameText); //przekazanie zmiennej figuresNameText do nastepnej klasy
                     intent.putExtra("rangeFrom", rangeFromText);

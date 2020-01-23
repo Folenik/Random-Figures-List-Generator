@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 
+
+<!-- Tutaj jest stworzony wygląd buttona
+    Najpierw wybrany jest jego shape (kształt) jako prostokąt
+    następnie obramowanie, kolor buttona oraz lekko zaokrąglone boki
+-->
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:padding="10dp"
     android:shape="rectangle">

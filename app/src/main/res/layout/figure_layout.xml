@@ -1,11 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 
+
+<!-- CardView jest to zewnętrzny widget dzięki któremu można podzielić listę na tzw. karty (widać to w appce)
+    Najpierw deklaruję CardView żeby wszystko co zawiera się poniżej znajdowało się właśnie w tej "karcie"
+    a następnie deklaruje sobie ConstraintLayout żeby móc używać Guideline (guidelinesy są częścią składową constraint layouta
+
+    W pliku build.gradle (Module: app) znajdujacym sie w katalogu Gradle Scripts
+    dodałem dwie linijki implementation dzięki którym można używać CardView oraz ConstraintLayout
+    -->
+
+
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/card_view_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="5dp"
+    android:layout_marginTop="5dp"
     app:cardCornerRadius="4dp"
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintEnd_toEndOf="parent"
@@ -13,9 +24,9 @@
     app:layout_constraintTop_toTopOf="parent">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraint_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/constraint_layout"
         android:padding="5dp">
 
         <androidx.constraintlayout.widget.Guideline
@@ -23,7 +34,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.2" />
+            app:layout_constraintGuide_percent="0.25" />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideLineAfterLeft"
@@ -37,9 +48,9 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.8" />
+            app:layout_constraintGuide_percent="0.75" />
 
-        <androidx.appcompat.widget.AppCompatImageView
+        <ImageView
             android:id="@+id/figure_logo"
             android:layout_width="56dp"
             android:layout_height="56dp"
@@ -47,67 +58,76 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/figure_name2"
-            android:layout_width="wrap_content"
+        <TextView
+            android:id="@+id/figure_firstDimension2"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif-black"
-            android:hint="Figure name"
-            android:textSize="18dp"
+            android:gravity="center_horizontal"
+            android:hint="Figure firstDimension"
+            android:textSize="16dp"
             app:layout_constraintEnd_toEndOf="@id/guideLineAfterLeft"
             app:layout_constraintStart_toStartOf="@id/guideLineLeft"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/figure_characteristic2"
-            android:layout_width="wrap_content"
+        <TextView
+            android:id="@+id/figure_secondDimension2"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif-black"
-            android:hint="Figure characteristic"
-            android:textSize="18dp"
+            android:gravity="center_horizontal"
+            android:hint="Figure secondDimension"
+            android:textSize="16dp"
             app:layout_constraintEnd_toEndOf="@id/guideLineAfterAferLeft"
             app:layout_constraintStart_toStartOf="@id/guideLineAfterLeft"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <androidx.appcompat.widget.AppCompatTextView
+        <TextView
             android:id="@+id/figure_area2"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif-black"
+            android:gravity="center_horizontal"
             android:hint="Figure area"
-            android:textSize="18dp"
+            android:textSize="16dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@id/guideLineAfterAferLeft"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/figure_name"
-            android:layout_width="wrap_content"
+        <TextView
+            android:id="@+id/figure_firstDimension"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif-black"
+            android:gravity="center_horizontal"
             android:hint="NAME"
+            android:paddingBottom="5dp"
             android:textSize="14dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@id/guideLineAfterLeft"
             app:layout_constraintStart_toStartOf="@id/guideLineLeft" />
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/figure_characteristic"
-            android:layout_width="wrap_content"
+        <TextView
+            android:id="@+id/figure_secondDimension"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif-black"
-            android:hint="CHARACTERISTIC"
+            android:gravity="center_horizontal"
+            android:hint="CHARACTER"
+            android:paddingBottom="5dp"
             android:textSize="14dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@id/guideLineAfterAferLeft"
             app:layout_constraintStart_toStartOf="@id/guideLineAfterLeft" />
 
-        <androidx.appcompat.widget.AppCompatTextView
+        <TextView
             android:id="@+id/figure_area"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif-black"
+            android:gravity="center_horizontal"
             android:hint="AREA"
+            android:paddingBottom="5dp"
             android:textSize="14dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

@@ -6,6 +6,9 @@
     android:layout_height="match_parent"
     tools:context=".PrimaryActivity">
 
+    <!-- Tutaj są tylko dwa elementy, Toolbar znajduje się na samej górze a pod nim jest recyclerview
+    RecyclerView pozwala nam utworzyć wieloelementową listę -->
+
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
