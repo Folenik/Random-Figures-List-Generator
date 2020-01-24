@@ -226,8 +226,8 @@ public class PrimaryActivity extends AppCompatActivity {
                     editor.putInt("trojkaty", getPrefTriangle + 1); //dodanie do ilości prostokątów wartość 1
                     editor.commit();
                 } else if (figure.getTypeOfFigure() == 3) {
-                    //Integer.valueOf(figure.getCircleArea().toString()) <- wytlumaczenie: najpierw konwertujemy getCircleArea ktory jest DOUBLE na stringa, a potem tego stringa konwertujemy na INT (nie dalo sie bezposrednio z double na int)
-                    editor.putInt("pole", getPrefArea + Integer.valueOf(figure.getCircleArea().toString()));
+                    //Integer.valueOf(figure.getCircleArea().intValue()) <- wytlumaczenie: najpierw konwertujemy getCircleArea ktory jest DOUBLE na inta, a potem dla pewnosci robimy jeszcze Integer.valueOf zeby nic sie po drodze nie popsulo
+                    editor.putInt("pole", getPrefArea + Integer.valueOf(figure.getCircleArea().intValue()));
                     editor.putInt("kola", getPrefCircle + 1); //dodanie do ilości prostokątów wartość 1
                     editor.commit();
                 }
