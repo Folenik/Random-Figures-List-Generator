@@ -12,6 +12,7 @@ public class Figure {
     int randomDimension2; // losowy wymiar2
     int result;
     int visibility = 1;
+    int wasChanged = 0;
 
     public Figure(int firstrandom, int secondrandom) {
         this.firstrandom = firstrandom;
@@ -28,6 +29,10 @@ public class Figure {
     public int getTypeOfFigure() {
         return randomNumber;
     } // funkcja umozliwiajaca pobranie typu figury (ustalilem ze 1 to prostokat, 2 to trojkat, 3 to kolo)
+
+    public void setTypeOfFigure(int randomNumber) {
+        this.randomNumber= randomNumber;
+    } // pozwala ustawić randomDimension1 (uzywane jest przy edycji elementu dla nadania mu nowego boku)
 
     public Integer getDimension1() {
         return randomDimension1;
@@ -46,7 +51,19 @@ public class Figure {
     } // jak wyzej
 
     public Double getCircleArea() {
-        return (3.141592 * ((getDimension1() * (getDimension1()) / 2)));
+        return (3.141592 * ((getDimension1()*getDimension1())));
+    } // jak wyzej
+
+    public Integer getRectanglePerimeter() {
+        return 2*randomDimension1 + 2*randomDimension2;
+    } // umozliwia pobranie pola prostokata
+
+    public Integer getTrianglePerimeter() {
+        return 3*randomDimension1;
+    } // jak wyzej
+
+    public Double getCirclePerimeter() {
+        return (2*getDimension1()*3.141592);
     } // jak wyzej
 
     public void setDimension1(int randomDimension1) {
@@ -71,6 +88,14 @@ public class Figure {
 
     public Integer getVisibility() {
         return visibility;
+    }
+
+    public void setChanged(int wasChanged) {
+        this.wasChanged = wasChanged;
+    }
+
+    public Integer getChanged() {
+        return wasChanged;
     }
 }
 

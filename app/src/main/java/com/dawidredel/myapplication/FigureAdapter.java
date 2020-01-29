@@ -2,6 +2,7 @@ package com.dawidredel.myapplication;
 
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.text.InputType;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -26,10 +27,10 @@ public class FigureAdapter extends RecyclerView.Adapter<FigureAdapter.MyViewHold
     private List<Figure> figuresList; // nowa lista figureList wg. klasy Figure
     CharSequence[] values = {"Usuń element", "Wyświetl szczegóły", "Edytuj dane", "Duplikuj wpis"}; // tablica przechowujaca stringi
     AlertDialog alertDialog1, alertDialog2, alertDialog3; // deklaracja 3 potrzebnych alertdialogow
-    ViewGroup.LayoutParams params; // parametry dla layouta
-    SharedPreferences pref; // opisane w innych klasach
-    SharedPreferences.Editor editor; // j.w
-    Integer getPrefArea, getPrefRectangle, getPrefTriangle, getPrefCircle;
+    ViewGroup.LayoutParams params, params2; // parametry dla layouta
+    SharedPreferences pref, currentPref; // opisane w innych klasach
+    SharedPreferences.Editor editor, currentEditor; // j.w
+    Integer getPrefArea, getPrefRectangle, getPrefTriangle, getPrefCircle, switchInteger;
 
     //stworzenie ViewHoldera (przechowuje widok dla RecyclerView, trzeba tutaj opisac wszystkie elementy majace sie wyswietlic na pojedynczym elemencie listy)
     public class MyViewHolder extends RecyclerView.ViewHolder {
@@ -77,13 +78,17 @@ public class FigureAdapter extends RecyclerView.Adapter<FigureAdapter.MyViewHold
         //onBindViewHolder czyli update dla ViewHoldera, wypelnienie go elementami
         //przyjmuje dwa parametry tzn holder (jest to pojedynczy element listy
         //natomiast position to jego pozycja na liscie
-
         final Figure figure = figuresList.get(position); //pobranie pozycji danej figury
+
 
         //tutaj nie da się pobrać kontekstu więc obszedłem to w ten sposób że pobrałem sobie kontekst od obrazka jednego elementu i to się sprawdza
         //SharedPreferences opisane w pozostalych klasach
         pref = holder.image.getContext().getSharedPreferences("MyPref", 0);
         editor = pref.edit();
+
+        currentPref = holder.image.getContext().getSharedPreferences("CurrentPref", 0);
+        currentEditor = pref.edit();
+
         getPrefArea = pref.getInt("pole", 0);
         getPrefRectangle = pref.getInt("prostokaty", 0);
         getPrefTriangle = pref.getInt("trojkaty", 0);
@@ -92,12 +97,12 @@ public class FigureAdapter extends RecyclerView.Adapter<FigureAdapter.MyViewHold
         //jeśli figura ma Visibility 0 to ustawiony jest widocznosc holdera na GONE (czyli znika), nastepnie parametry layoutu na 0,0 (zeby lista sie zaktualizowala)
         if (figure.getVisibility() == 0) {
             holder.cardView.setVisibility(View.GONE);
-            holder.itemView.setLayoutParams(new RecyclerView.LayoutParams(0, 0));
+            holder.cardView.setLayoutParams(new RecyclerView.LayoutParams(0, 0));
         }
-
         //analogicznie jak wyzej
         if (figure.getVisibility() == 1) {
             holder.cardView.setVisibility(View.VISIBLE);
+            holder.cardView.setLayoutParams(new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         }
 
         //pobranie typu figury, jesli 1 (czyli prostokat) to ustawienie obrazka prostokata
@@ -153,8 +158,27 @@ public class FigureAdapter extends RecyclerView.Adapter<FigureAdapter.MyViewHold
                         switch (item) {
                             //jeśli wybrana opcja 1 to usuwa element na danej pozycji i odswieza liste
                             case 0:
+                                Integer helpCounter1 = pref.getInt("prostokaty",0);
+                                Integer helpCounter2 = pref.getInt("trojkaty",0);
+                                Integer helpCounter3 = pref.getInt("kola",0);
+                                Integer helpCounter4 = pref.getInt("pole",0);
+
+                                editor.putInt("prostokaty",helpCounter1-1);
+                                editor.putInt("trojkaty",helpCounter2-1);
+                                editor.putInt("kola",helpCounter3-1);
+                                if(figure.getTypeOfFigure() == 1) {
+                                    editor.putInt("pole",helpCounter4-figure.getRectangleArea());
+                                }
+                                if(figure.getTypeOfFigure() == 2) {
+                                    editor.putInt("pole",helpCounter4-figure.getTriangleArea());
+                                }
+                                if(figure.getTypeOfFigure() == 3) {
+                                    editor.putInt("pole",helpCounter4-figure.getCircleArea().intValue());
+                                }
+
                                 figuresList.remove(holder.getPosition());
                                 notifyItemRemoved(holder.getPosition());
+                                notifyDataSetChanged();
                                 break;
                             //jesli wybrana opcja 2 to tworzy nowy layout, wsadza do niego textviewy a nastepnie ten layout jest wyswietlany przez dialogboxa
                             case 1:
@@ -166,14 +190,17 @@ public class FigureAdapter extends RecyclerView.Adapter<FigureAdapter.MyViewHold
                                 TextView tv1 = new TextView(holder.image.getContext());
                                 TextView tv2 = new TextView(holder.image.getContext());
                                 TextView tv3 = new TextView(holder.image.getContext());
+                                TextView tv4 = new TextView(holder.image.getContext());
 
                                 tv1.setPadding(0, 5, 0, 5);
                                 tv2.setPadding(0, 0, 0, 5);
                                 tv3.setPadding(0, 0, 0, 5);
+                                tv4.setPadding(0, 0, 0, 5);
 
                                 tv1.setTextSize(18);
                                 tv2.setTextSize(18);
                                 tv3.setTextSize(18);
+                                tv4.setTextSize(18);
 
                                 if (figure.getTypeOfFigure() == 1) {
                                     tv1.setText("Bok 1: " + holder.firstDimension.getText());
@@ -185,6 +212,9 @@ public class FigureAdapter extends RecyclerView.Adapter<FigureAdapter.MyViewHold
                                     tv3.setText("Pole: " + holder.area.getText());
                                     tv3.setGravity(Gravity.CENTER);
 
+                                    tv4.setText("Obwód: " + figure.getRectanglePerimeter().toString());
+                                    tv4.setGravity(Gravity.CENTER);
+
                                 } else if (figure.getTypeOfFigure() == 2) {
                                     tv1.setText("Bok: " + holder.firstDimension.getText());
                                     tv1.setGravity(Gravity.CENTER);
@@ -194,6 +224,9 @@ public class FigureAdapter extends RecyclerView.Adapter<FigureAdapter.MyViewHold
 
                                     tv3.setText("Pole: " + holder.area.getText());
                                     tv3.setGravity(Gravity.CENTER);
+
+                                    tv4.setText("Obwód: " + figure.getTrianglePerimeter().toString());
+                                    tv4.setGravity(Gravity.CENTER);
 
                                 } else if (figure.getTypeOfFigure() == 3) {
                                     tv1.setText("Promień: " + holder.firstDimension.getText());
@@ -205,11 +238,15 @@ public class FigureAdapter extends RecyclerView.Adapter<FigureAdapter.MyViewHold
                                     tv3.setText("Pole: " + holder.area.getText());
                                     tv3.setGravity(Gravity.CENTER);
 
+                                    tv4.setText("Obwód: " + Integer.valueOf(figure.getCirclePerimeter().intValue()).toString());
+                                    tv4.setGravity(Gravity.CENTER);
+
                                 }
 
                                 layout.addView(tv1);
                                 layout.addView(tv2);
                                 layout.addView(tv3);
+                                layout.addView(tv4);
 
                                 final AlertDialog.Builder builder2 = new AlertDialog.Builder(holder.image.getContext());
                                 builder2.setTitle("Szczegóły");
@@ -223,10 +260,38 @@ public class FigureAdapter extends RecyclerView.Adapter<FigureAdapter.MyViewHold
                                 LinearLayout layout2 = new LinearLayout(holder.image.getContext());
                                 layout2.setOrientation(LinearLayout.VERTICAL);
 
+                                final TextView tv1_2 = new TextView(holder.image.getContext());
+                                final TextView tv2_2 = new TextView(holder.image.getContext());
+                                final TextView tv3_2 = new TextView(holder.image.getContext());
+
                                 final EditText et1 = new EditText(holder.image.getContext());
                                 final EditText et2 = new EditText(holder.image.getContext());
 
+                                tv1_2.setPadding(0, 5, 0, 5);
+                                tv2_2.setPadding(0, 0, 0, 5);
+                                tv3_2.setPadding(0, 0, 0, 5);
+
+                                tv1_2.setTextSize(18);
+                                tv2_2.setTextSize(18);
+                                tv3_2.setTextSize(18);
+
+                                tv1_2.setGravity(Gravity.CENTER);
+                                tv2_2.setGravity(Gravity.CENTER);
+                                tv3_2.setGravity(Gravity.CENTER);
+
+                                tv1_2.setId(R.id.figure_rectangle);
+                                tv2_2.setId(R.id.figure_triangle);
+                                tv3_2.setId(R.id.figure_circle);
+
+                                tv1_2.setText("Prostokąt");
+                                tv2_2.setText("Trójkąt");
+                                tv3_2.setText("Koło");
+
                                 if (figure.getTypeOfFigure() == 1) {
+                                    tv1_2.setTextColor(Color.parseColor("#F44336"));
+                                    tv2_2.setTextColor(Color.parseColor("#000000"));
+                                    tv3_2.setTextColor(Color.parseColor("#000000"));
+
                                     et1.setHint("Wprowadź nowy bok 1");
                                     et1.setInputType(InputType.TYPE_CLASS_NUMBER);
                                     et1.setGravity(Gravity.CENTER);
@@ -238,21 +303,90 @@ public class FigureAdapter extends RecyclerView.Adapter<FigureAdapter.MyViewHold
                                     et2.setVisibility(View.VISIBLE);
 
                                 } else if (figure.getTypeOfFigure() == 2) {
+                                    tv1_2.setTextColor(Color.parseColor("#000000"));
+                                    tv2_2.setTextColor(Color.parseColor("#F44336"));
+                                    tv3_2.setTextColor(Color.parseColor("#000000"));
+
                                     et1.setHint("Wprowadź nowy bok");
                                     et1.setInputType(InputType.TYPE_CLASS_NUMBER);
                                     et1.setGravity(Gravity.CENTER);
 
                                     et2.setHint("Wprowadź nową wysokość");
-                                    et2.setInputType(InputType.TYPE_CLASS_NUMBER);
                                     et2.setGravity(Gravity.CENTER);
+                                    et2.setInputType(InputType.TYPE_CLASS_NUMBER);
                                     et2.setVisibility(View.VISIBLE);
 
                                 } else if (figure.getTypeOfFigure() == 3) {
+                                    tv1_2.setTextColor(Color.parseColor("#000000"));
+                                    tv2_2.setTextColor(Color.parseColor("#F44336"));
+                                    tv3_2.setTextColor(Color.parseColor("#000000"));
+
                                     et1.setHint("Wprowadź nowy promień");
                                     et1.setInputType(InputType.TYPE_CLASS_NUMBER);
+                                    et1.setGravity(Gravity.CENTER);
                                     et2.setVisibility(View.INVISIBLE);
                                 }
 
+                                tv1_2.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        switchInteger = 1;
+
+                                        tv1_2.setTextColor(Color.parseColor("#F44336"));
+                                        tv2_2.setTextColor(Color.parseColor("#000000"));
+                                        tv3_2.setTextColor(Color.parseColor("#000000"));
+
+                                        et1.setHint("Wprowadź nowy bok 1");
+                                        et1.setInputType(InputType.TYPE_CLASS_NUMBER);
+                                        et1.setGravity(Gravity.CENTER);
+
+                                        et2.setHint("Wprowadź nowy bok 2");
+
+                                        et2.setGravity(Gravity.CENTER);
+                                        et2.setInputType(InputType.TYPE_CLASS_NUMBER);
+                                        et2.setVisibility(View.VISIBLE);
+                                    }
+                                });
+
+                                tv2_2.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        switchInteger = 2;
+
+                                        tv1_2.setTextColor(Color.parseColor("#000000"));
+                                        tv2_2.setTextColor(Color.parseColor("#F44336"));
+                                        tv3_2.setTextColor(Color.parseColor("#000000"));
+
+                                        et1.setHint("Wprowadź nowy bok");
+                                        et1.setInputType(InputType.TYPE_CLASS_NUMBER);
+                                        et1.setGravity(Gravity.CENTER);
+
+                                        et2.setHint("Wprowadź nową wysokość");
+                                        et2.setGravity(Gravity.CENTER);
+                                        et2.setInputType(InputType.TYPE_CLASS_NUMBER);
+                                        et2.setVisibility(View.VISIBLE);
+                                    }
+                                });
+
+                                tv3_2.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        switchInteger = 3;
+
+                                        tv1_2.setTextColor(Color.parseColor("#000000"));
+                                        tv2_2.setTextColor(Color.parseColor("#000000"));
+                                        tv3_2.setTextColor(Color.parseColor("#F44336"));
+
+                                        et1.setHint("Wprowadź nowy promień");
+                                        et1.setInputType(InputType.TYPE_CLASS_NUMBER);
+                                        et1.setGravity(Gravity.CENTER);
+                                        et2.setVisibility(View.INVISIBLE);
+                                    }
+                                });
+
+                                layout2.addView(tv1_2);
+                                layout2.addView(tv2_2);
+                                layout2.addView(tv3_2);
                                 layout2.addView(et1);
                                 layout2.addView(et2);
 
@@ -263,15 +397,37 @@ public class FigureAdapter extends RecyclerView.Adapter<FigureAdapter.MyViewHold
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
 
-                                        if (figure.getTypeOfFigure() == 1 || figure.getTypeOfFigure() == 2) {
+                                        if (switchInteger == 1) {
+                                            figure.setTypeOfFigure(1);
+
                                             holder.firstDimension.setText(et1.getText());
                                             holder.secondDimension.setText(et2.getText());
 
                                             figure.setDimension1(Integer.parseInt(et1.getText().toString()));
                                             figure.setDimension2(Integer.parseInt(et2.getText().toString()));
+
+                                            holder.image.setImageResource(R.drawable.rectangle);
+
                                             notifyDataSetChanged();
-                                        } else if (figure.getTypeOfFigure() == 3) {
+                                        } else if (switchInteger == 2) {
+                                            figure.setTypeOfFigure(2);
+
                                             holder.firstDimension.setText(et1.getText());
+                                            holder.secondDimension.setText(et2.getText());
+
+                                            figure.setDimension1(Integer.parseInt(et1.getText().toString()));
+                                            figure.setDimension2(Integer.parseInt(et2.getText().toString()));
+
+                                            holder.image.setImageResource(R.drawable.triangle);
+
+                                            notifyDataSetChanged();
+
+                                        } else if (switchInteger == 3) {
+                                            figure.setTypeOfFigure(3);
+
+                                            holder.firstDimension.setText(et1.getText());
+
+                                            holder.image.setImageResource(R.drawable.circle);
 
                                             figure.setDimension1(Integer.parseInt(et1.getText().toString()));
 
@@ -296,10 +452,10 @@ public class FigureAdapter extends RecyclerView.Adapter<FigureAdapter.MyViewHold
                             //duplikacja elementu na liscie i edycja SharedPref (opisane w innych klasach)
                             case 3:
                                 figuresList.add(figure);
-
                                 if (figure.getTypeOfFigure() == 1) {
                                     editor.putInt("pole", getPrefArea + figure.getRectangleArea());
                                     editor.putInt("prostokaty", getPrefRectangle + 1);
+
                                 } else if (figure.getTypeOfFigure() == 2) {
                                     editor.putInt("pole", getPrefArea + figure.getTriangleArea());
                                     editor.putInt("trojkaty", getPrefTriangle + 1);
@@ -307,6 +463,7 @@ public class FigureAdapter extends RecyclerView.Adapter<FigureAdapter.MyViewHold
                                 } else if (figure.getTypeOfFigure() == 3) {
                                     editor.putInt("pole", getPrefArea + Integer.valueOf(figure.getCircleArea().intValue()));
                                     editor.putInt("kola", getPrefCircle + 1);
+
                                 }
                                 editor.commit();
                                 notifyDataSetChanged();

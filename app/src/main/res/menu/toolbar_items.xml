@@ -8,6 +8,12 @@
         app:showAsAction="always" />
 
     <item
+        android:id="@+id/action_stats"
+        android:icon="@drawable/ic_description_black_24dp"
+        android:title="Stats"
+        app:showAsAction="always" />
+
+    <item
         android:id="@+id/action_delete"
         android:icon="@drawable/ic_delete_forever_black_24dp"
         android:title="Delete"
