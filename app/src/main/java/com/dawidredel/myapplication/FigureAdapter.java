@@ -31,6 +31,7 @@ public class FigureAdapter extends RecyclerView.Adapter<FigureAdapter.MyViewHold
     SharedPreferences pref, currentPref; // opisane w innych klasach
     SharedPreferences.Editor editor, currentEditor; // j.w
     Integer getPrefArea, getPrefRectangle, getPrefTriangle, getPrefCircle, switchInteger;
+    Integer getCurrentPrefArea, getCurrentPrefRectangle, getCurrentPrefTriangle, getCurrentPrefCircle;
 
     //stworzenie ViewHoldera (przechowuje widok dla RecyclerView, trzeba tutaj opisac wszystkie elementy majace sie wyswietlic na pojedynczym elemencie listy)
     public class MyViewHolder extends RecyclerView.ViewHolder {
@@ -87,12 +88,17 @@ public class FigureAdapter extends RecyclerView.Adapter<FigureAdapter.MyViewHold
         editor = pref.edit();
 
         currentPref = holder.image.getContext().getSharedPreferences("CurrentPref", 0);
-        currentEditor = pref.edit();
+        currentEditor = currentPref.edit();
 
         getPrefArea = pref.getInt("pole", 0);
         getPrefRectangle = pref.getInt("prostokaty", 0);
         getPrefTriangle = pref.getInt("trojkaty", 0);
         getPrefCircle = pref.getInt("kola", 0);
+
+        getCurrentPrefArea = currentPref.getInt("pole", 0);
+        getCurrentPrefRectangle = currentPref.getInt("prostokaty", 0);
+        getCurrentPrefTriangle = currentPref.getInt("trojkaty", 0);
+        getCurrentPrefCircle = currentPref.getInt("kola", 0);
 
         //jeśli figura ma Visibility 0 to ustawiony jest widocznosc holdera na GONE (czyli znika), nastepnie parametry layoutu na 0,0 (zeby lista sie zaktualizowala)
         if (figure.getVisibility() == 0) {
@@ -158,22 +164,42 @@ public class FigureAdapter extends RecyclerView.Adapter<FigureAdapter.MyViewHold
                         switch (item) {
                             //jeśli wybrana opcja 1 to usuwa element na danej pozycji i odswieza liste
                             case 0:
-                                Integer helpCounter1 = pref.getInt("prostokaty",0);
-                                Integer helpCounter2 = pref.getInt("trojkaty",0);
-                                Integer helpCounter3 = pref.getInt("kola",0);
-                                Integer helpCounter4 = pref.getInt("pole",0);
+                                Integer helpCounter1 = pref.getInt("prostokaty", 0);
+                                Integer helpCounter2 = pref.getInt("trojkaty", 0);
+                                Integer helpCounter3 = pref.getInt("kola", 0);
+                                Integer helpCounter4 = pref.getInt("pole", 0);
 
-                                editor.putInt("prostokaty",helpCounter1-1);
-                                editor.putInt("trojkaty",helpCounter2-1);
-                                editor.putInt("kola",helpCounter3-1);
-                                if(figure.getTypeOfFigure() == 1) {
-                                    editor.putInt("pole",helpCounter4-figure.getRectangleArea());
+                                Integer helpCounter1_2 = currentPref.getInt("prostokaty", 0);
+                                Integer helpCounter2_2 = currentPref.getInt("trojkaty", 0);
+                                Integer helpCounter3_2 = currentPref.getInt("kola", 0);
+                                Integer helpCounter4_2 = currentPref.getInt("pole", 0);
+
+                                if (figure.getTypeOfFigure() == 1) {
+                                    editor.putInt("pole", helpCounter4 - figure.getRectangleArea());
+                                    editor.putInt("prostokaty", helpCounter1 - 1);
+                                    editor.commit();
+
+                                    currentEditor.putInt("pole", helpCounter4_2 - figure.getRectangleArea());
+                                    currentEditor.putInt("prostokaty", helpCounter1_2 - 1);
+                                    currentEditor.commit();
                                 }
-                                if(figure.getTypeOfFigure() == 2) {
-                                    editor.putInt("pole",helpCounter4-figure.getTriangleArea());
+                                if (figure.getTypeOfFigure() == 2) {
+                                    editor.putInt("pole", helpCounter4 - figure.getTriangleArea());
+                                    editor.putInt("trojkaty", helpCounter2 - 1);
+                                    editor.commit();
+
+                                    currentEditor.putInt("pole", helpCounter4_2 - figure.getTriangleArea());
+                                    currentEditor.putInt("trojkaty", helpCounter2_2 - 1);
+                                    currentEditor.commit();
                                 }
-                                if(figure.getTypeOfFigure() == 3) {
-                                    editor.putInt("pole",helpCounter4-figure.getCircleArea().intValue());
+                                if (figure.getTypeOfFigure() == 3) {
+                                    editor.putInt("pole", helpCounter4 - figure.getCircleArea().intValue());
+                                    editor.putInt("kola", helpCounter3 - 1);
+                                    editor.commit();
+
+                                    currentEditor.putInt("pole", helpCounter4_2 - figure.getCircleArea().intValue());
+                                    currentEditor.putInt("kola", helpCounter3_2 - 1);
+                                    currentEditor.commit();
                                 }
 
                                 figuresList.remove(holder.getPosition());
@@ -398,6 +424,27 @@ public class FigureAdapter extends RecyclerView.Adapter<FigureAdapter.MyViewHold
                                     public void onClick(DialogInterface dialog, int which) {
 
                                         if (switchInteger == 1) {
+                                            Integer helpTypeOfFigure = figure.getTypeOfFigure();
+
+                                            if (helpTypeOfFigure == 2) {
+                                                editor.putInt("trojkaty", getPrefTriangle - 1);
+                                                editor.putInt("pole", getPrefArea - figure.getTriangleArea());
+                                                editor.commit();
+
+                                                currentEditor.putInt("trojkaty", getCurrentPrefTriangle - 1);
+                                                currentEditor.putInt("pole", getCurrentPrefArea - figure.getTriangleArea());
+                                                currentEditor.commit();
+                                            }
+                                            if (helpTypeOfFigure == 3) {
+                                                editor.putInt("kola", getPrefCircle - 1);
+                                                editor.putInt("pole", getPrefArea - figure.getCircleArea().intValue());
+                                                editor.commit();
+
+                                                currentEditor.putInt("kola", getCurrentPrefCircle - 1);
+                                                currentEditor.putInt("pole", getCurrentPrefArea - figure.getCircleArea().intValue());
+                                                currentEditor.commit();
+                                            }
+
                                             figure.setTypeOfFigure(1);
 
                                             holder.firstDimension.setText(et1.getText());
@@ -409,7 +456,38 @@ public class FigureAdapter extends RecyclerView.Adapter<FigureAdapter.MyViewHold
                                             holder.image.setImageResource(R.drawable.rectangle);
 
                                             notifyDataSetChanged();
+
+                                            editor.putInt("pole", getPrefArea + figure.getRectangleArea());
+                                            editor.putInt("prostokaty", getPrefRectangle + 1);
+                                            editor.commit();
+
+                                            currentEditor.putInt("pole", getCurrentPrefArea + figure.getRectangleArea());
+                                            currentEditor.putInt("prostokaty", getCurrentPrefRectangle + 1);
+                                            currentEditor.commit();
+
+
                                         } else if (switchInteger == 2) {
+                                            Integer helpTypeOfFigure = figure.getTypeOfFigure();
+
+                                            if (helpTypeOfFigure == 1) {
+                                                editor.putInt("prostokaty", getPrefRectangle - 1);
+                                                editor.putInt("pole", getPrefArea - figure.getRectangleArea());
+                                                editor.commit();
+
+                                                currentEditor.putInt("prostokaty", getCurrentPrefRectangle - 1);
+                                                currentEditor.putInt("pole", getCurrentPrefArea - figure.getRectangleArea());
+                                                currentEditor.commit();
+                                            }
+                                            if (helpTypeOfFigure == 3) {
+                                                editor.putInt("kola", getPrefCircle - 1);
+                                                editor.putInt("pole", getPrefArea - figure.getCircleArea().intValue());
+                                                editor.commit();
+
+                                                currentEditor.putInt("kola", getCurrentPrefCircle - 1);
+                                                currentEditor.putInt("pole", getCurrentPrefArea - figure.getCircleArea().intValue());
+                                                currentEditor.commit();
+                                            }
+
                                             figure.setTypeOfFigure(2);
 
                                             holder.firstDimension.setText(et1.getText());
@@ -420,9 +498,43 @@ public class FigureAdapter extends RecyclerView.Adapter<FigureAdapter.MyViewHold
 
                                             holder.image.setImageResource(R.drawable.triangle);
 
+
+                                            editor.putInt("pole", getPrefArea + figure.getTriangleArea());
+                                            editor.putInt("trojkaty", getPrefTriangle + 1);
+                                            editor.commit();
+
+
                                             notifyDataSetChanged();
 
+                                            currentEditor.putInt("pole", getCurrentPrefArea + figure.getTriangleArea());
+                                            currentEditor.putInt("trojkaty", getCurrentPrefTriangle + 1);
+                                            currentEditor.commit();
+
+
+                                            ;
+
                                         } else if (switchInteger == 3) {
+                                            Integer helpTypeOfFigure = figure.getTypeOfFigure();
+
+                                            if (helpTypeOfFigure == 1) {
+                                                editor.putInt("prostokaty", getPrefRectangle - 1);
+                                                editor.putInt("pole", getPrefArea - figure.getRectangleArea());
+                                                editor.commit();
+
+                                                currentEditor.putInt("prostokaty", getCurrentPrefRectangle - 1);
+                                                currentEditor.putInt("pole", getCurrentPrefArea - figure.getRectangleArea());
+                                                currentEditor.commit();
+                                            }
+                                            if (helpTypeOfFigure == 2) {
+                                                editor.putInt("trojkaty", getPrefTriangle - 1);
+                                                editor.putInt("pole", getPrefArea - figure.getTriangleArea());
+                                                editor.commit();
+
+                                                currentEditor.putInt("trojkaty", getCurrentPrefTriangle - 1);
+                                                currentEditor.putInt("pole", getCurrentPrefArea - figure.getTriangleArea());
+                                                currentEditor.commit();
+                                            }
+
                                             figure.setTypeOfFigure(3);
 
                                             holder.firstDimension.setText(et1.getText());
@@ -431,7 +543,17 @@ public class FigureAdapter extends RecyclerView.Adapter<FigureAdapter.MyViewHold
 
                                             figure.setDimension1(Integer.parseInt(et1.getText().toString()));
 
+                                            editor.putInt("pole", getPrefArea + figure.getCircleArea().intValue());
+                                            editor.putInt("kola", getPrefCircle + 1);
+                                            editor.commit();
+
                                             notifyDataSetChanged();
+
+                                            currentEditor.putInt("pole", getCurrentPrefArea + figure.getCircleArea().intValue());
+                                            currentEditor.putInt("kola", getCurrentPrefCircle + 1);
+                                            currentEditor.commit();
+
+
                                         }
                                     }
                                 });
@@ -455,14 +577,30 @@ public class FigureAdapter extends RecyclerView.Adapter<FigureAdapter.MyViewHold
                                 if (figure.getTypeOfFigure() == 1) {
                                     editor.putInt("pole", getPrefArea + figure.getRectangleArea());
                                     editor.putInt("prostokaty", getPrefRectangle + 1);
+                                    editor.commit();
+
+                                    currentEditor.putInt("pole", getCurrentPrefArea + figure.getRectangleArea());
+                                    currentEditor.putInt("prostokaty", getCurrentPrefRectangle + 1);
+                                    currentEditor.commit();
+
 
                                 } else if (figure.getTypeOfFigure() == 2) {
                                     editor.putInt("pole", getPrefArea + figure.getTriangleArea());
                                     editor.putInt("trojkaty", getPrefTriangle + 1);
+                                    editor.commit();
+
+                                    currentEditor.putInt("pole", getCurrentPrefArea + figure.getTriangleArea());
+                                    currentEditor.putInt("trojkaty", getCurrentPrefTriangle + 1);
+                                    currentEditor.commit();
 
                                 } else if (figure.getTypeOfFigure() == 3) {
                                     editor.putInt("pole", getPrefArea + Integer.valueOf(figure.getCircleArea().intValue()));
                                     editor.putInt("kola", getPrefCircle + 1);
+                                    editor.commit();
+
+                                    currentEditor.putInt("pole", getCurrentPrefArea + Integer.valueOf(figure.getCircleArea().intValue()));
+                                    currentEditor.putInt("kola", getCurrentPrefCircle + 1);
+                                    currentEditor.commit();
 
                                 }
                                 editor.commit();

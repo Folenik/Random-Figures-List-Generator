@@ -43,6 +43,9 @@ public class PrimaryActivity extends AppCompatActivity {
     Integer helpVar2 = 0;
     Integer helpVar3 = 0;
     Integer helpVar4 = 0;
+    Integer helpVar5 = 0;
+    Integer helpVar6 = 0;
+    Integer helpVar7 = 0;
     AlertDialog alertDialog;
 
 
@@ -166,8 +169,12 @@ public class PrimaryActivity extends AppCompatActivity {
 
                 helpVar4 = helpVar4 + figure.getRectangleArea();
                 helpVar1 = helpVar1 + 1;
+
+                helpVar5 = helpVar5 + figure.getRectangleArea();
+
                 currentEditor.putInt("pole", helpVar4);
                 currentEditor.putInt("prostokaty", helpVar1);
+                currentEditor.putInt("pole_prostokaty",helpVar5);
             } else if (figure.getTypeOfFigure() == 2) { // jak wyzzej
                 editor.putInt("pole", getPrefArea + figure.getTriangleArea());
                 editor.putInt("trojkaty", getPrefTriangle + 1);
@@ -175,8 +182,11 @@ public class PrimaryActivity extends AppCompatActivity {
                 helpVar4 = helpVar4 + figure.getTriangleArea();
                 helpVar2 = helpVar2 + 1;
 
+                helpVar6 = helpVar6 + figure.getTriangleArea();
+
                 currentEditor.putInt("pole", helpVar4);
                 currentEditor.putInt("trojkaty", helpVar2);
+                currentEditor.putInt("pole_trojkaty",helpVar6);
             } else if (figure.getTypeOfFigure() == 3) { // jak wyzej
                 editor.putInt("pole", getPrefArea + Integer.valueOf(figure.getCircleArea().intValue()));
                 editor.putInt("kola", getPrefCircle + 1);
@@ -184,8 +194,11 @@ public class PrimaryActivity extends AppCompatActivity {
                 helpVar4 = helpVar4 + Integer.valueOf(figure.getCircleArea().intValue());
                 helpVar3 = helpVar3 + 1;
 
+                helpVar7 = helpVar7 + Integer.valueOf(figure.getCircleArea().intValue());
+
                 currentEditor.putInt("pole", helpVar4);
                 currentEditor.putInt("kola", helpVar3);
+                currentEditor.putInt("pole_kola",helpVar7);
             }
             editor.commit(); //zatwierdzenie zmian w editorze
             currentEditor.commit();
@@ -207,8 +220,28 @@ public class PrimaryActivity extends AppCompatActivity {
             case R.id.action_delete_sub1: //jesli wcisniety jest delete opcja 1 to:
                 figureList.clear(); //czysci liste
                 mAdapter.notifyDataSetChanged(); //odswieza liste
+                currentEditor.putInt("pole",0);
+                currentEditor.commit();
+                currentEditor.putInt("kola",0);
+                currentEditor.commit();
+                currentEditor.putInt("trojkaty",0);
+                currentEditor.commit();
+                currentEditor.putInt("prostokaty",0);
+                currentEditor.commit();
+                currentEditor.putInt("pole_prostokaty",0);
+                currentEditor.commit();
+                currentEditor.putInt("pole_trojkaty",0);
+                currentEditor.commit();
+                currentEditor.putInt("pole_kola",0);
+                currentEditor.commit();
 
-
+                helpVar1 = 0;
+                helpVar2 = 0;
+                helpVar3 = 0;
+                helpVar4 = 0;
+                helpVar5 = 0;
+                helpVar6 = 0;
+                helpVar7 = 0;
                 break;
             case R.id.action_delete_sub2:
                 for (int i = 0; i < figureList.size(); i++) { // iteracja przez całąlistę
@@ -216,8 +249,17 @@ public class PrimaryActivity extends AppCompatActivity {
                         figureList.remove(i); // usuwa ją
                         mAdapter.notifyDataSetChanged(); //odswieża liste
                         i = i - 1; //cofa iteracje o 1 (ponieważ pozbyliśmy się jednego elementu i następny z listy otrzymuje jego numer)
+
+                        currentEditor.putInt("prostokaty",0);
+                        currentEditor.commit();
+
+                        helpVar1 = 0;
+                        helpVar5 = 0;
+                        helpVar4 = helpVar4 - currentPref.getInt("pole_prostokaty",0);
                     }
                 }
+                currentEditor.putInt("pole",currentPref.getInt("pole",0)-currentPref.getInt("pole_prostokaty",0));
+                currentEditor.commit();
                 break;
             case R.id.action_delete_sub3: //analogicznie jak wyzej
                 for (int i = 0; i < figureList.size(); i++) {
@@ -225,8 +267,17 @@ public class PrimaryActivity extends AppCompatActivity {
                         figureList.remove(i);
                         mAdapter.notifyDataSetChanged();
                         i = i - 1;
+
+                        currentEditor.putInt("trojkaty",0);
+                        currentEditor.commit();
+
+                        helpVar2 = 0;
+                        helpVar6 = 0;
+                        helpVar4 = helpVar4 - currentPref.getInt("pole_trojkaty",0);
                     }
                 }
+                currentEditor.putInt("pole",currentPref.getInt("pole",0)-currentPref.getInt("pole_trojkaty",0));
+                currentEditor.commit();
                 break;
             case R.id.action_delete_sub4: //analogicznie jak wyzej
                 for (int i = 0; i < figureList.size(); i++) {
@@ -234,8 +285,18 @@ public class PrimaryActivity extends AppCompatActivity {
                         figureList.remove(i);
                         mAdapter.notifyDataSetChanged();
                         i = i - 1;
+                        currentEditor.commit();
+                        currentEditor.putInt("kola",0);
+                        currentEditor.commit();
+
+                        helpVar3 = 0;
+                        helpVar7 = 0;
+                        helpVar4 = helpVar4 - currentPref.getInt("pole_kola",0);
+
                     }
                 }
+                currentEditor.putInt("pole",currentPref.getInt("pole",0)-currentPref.getInt("pole_kola",0));
+                currentEditor.commit();
                 break;
             case R.id.action_sort_sub1:
                 Collections.sort(figureList, new Comparator() {
@@ -314,8 +375,13 @@ public class PrimaryActivity extends AppCompatActivity {
 
 
                     helpVar4 = helpVar4 + figure.getRectangleArea();
+                    helpVar1=helpVar1+1;
                     currentEditor.putInt("pole", helpVar4); //dodanie do SharedPref pola tej listy
-                    currentEditor.putInt("prostokaty", helpVar1++); //dodanie do ilości prostokątów wartość 1
+                    currentEditor.putInt("prostokaty", helpVar1); //dodanie do ilości prostokątów wartość 1
+                    currentEditor.commit();
+
+                    helpVar5 = helpVar5 + figure.getRectangleArea();
+                    currentEditor.putInt("pole_prostokaty",helpVar5);
                     currentEditor.commit();
 
 
@@ -325,9 +391,15 @@ public class PrimaryActivity extends AppCompatActivity {
                     editor.commit();
 
                     helpVar4 = helpVar4 + figure.getTriangleArea();
+                    helpVar2 = helpVar2+1;
                     currentEditor.putInt("pole", helpVar4); //dodanie do SharedPref pola tej listy
-                    currentEditor.putInt("trojkaty", helpVar2++); //dodanie do ilości prostokątów wartość 1
+                    currentEditor.putInt("trojkaty", helpVar2); //dodanie do ilości prostokątów wartość 1
                     currentEditor.commit();
+
+                    helpVar6 = helpVar6 + figure.getTriangleArea();
+                    currentEditor.putInt("pole_trojkaty",helpVar6);
+                    currentEditor.commit();
+
                 } else if (figure.getTypeOfFigure() == 3) {
                     //Integer.valueOf(figure.getCircleArea().intValue()) <- wytlumaczenie: najpierw konwertujemy getCircleArea ktory jest DOUBLE na inta, a potem dla pewnosci robimy jeszcze Integer.valueOf zeby nic sie po drodze nie popsulo
                     editor.putInt("pole", getPrefArea + Integer.valueOf(figure.getCircleArea().intValue()));
@@ -336,8 +408,13 @@ public class PrimaryActivity extends AppCompatActivity {
 
 
                     helpVar4 = helpVar4 + Integer.valueOf(figure.getCircleArea().intValue());
+                    helpVar3 = helpVar3+1;
                     currentEditor.putInt("pole", helpVar4); //dodanie do SharedPref pola tej listy
-                    currentEditor.putInt("kola", helpVar3++); //dodanie do ilości prostokątów wartość 1
+                    currentEditor.putInt("kola", helpVar3); //dodanie do ilości prostokątów wartość 1
+                    currentEditor.commit();
+
+                    helpVar7 = helpVar7 + figure.getCircleArea().intValue();
+                    currentEditor.putInt("pole_kola",helpVar7);
                     currentEditor.commit();
                 }
                 break;
